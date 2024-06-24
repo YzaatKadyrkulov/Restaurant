@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Builder
 public record SaveChequeRequestRd(
-            double priceAverage,
+            int priceAverage,
             LocalDate localDate
 ) {
 }

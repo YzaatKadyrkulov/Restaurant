@@ -18,8 +18,6 @@ public interface ChequeService {
 
     Optional<SaveChequeResponseRd> getChequeById(Long id);
 
-    List<SaveChequeResponseRd> getAllCheques();
-
     double getTotalAmountForWaiterOnDate(Long waiterId, LocalDate date);
 
     double getDailyAverageChequeAmount(LocalDate date);

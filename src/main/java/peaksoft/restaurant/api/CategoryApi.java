@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.restaurant.dto.request.category.SaveCategoryRtRd;
 import peaksoft.restaurant.dto.response.category.CategoryRsRd;
 import peaksoft.restaurant.dto.response.restaurant.SimpleResponse;
-import peaksoft.restaurant.repository.CategoryRepository;
 import peaksoft.restaurant.service.CategoryService;
 
 import java.util.List;

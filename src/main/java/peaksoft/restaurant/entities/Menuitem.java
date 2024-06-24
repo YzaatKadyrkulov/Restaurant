@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -19,8 +20,8 @@ import static jakarta.persistence.CascadeType.*;
 public class Menuitem extends BaseEntity{
     private String name;
     private String image;
-    @Min(value = 0, message = "Price cannot be negative")
-    private double price;
+    @NotNull
+    @Min(value = 0, message = "Price cannot be negative")    private double price;
     private String description;
     private boolean isVegetarian;
 

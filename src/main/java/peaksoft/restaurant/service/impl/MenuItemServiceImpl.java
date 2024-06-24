@@ -61,7 +61,7 @@ public class MenuItemServiceImpl implements MenuItemService {
 
         menuItemRepository.save(menuItem);
 
-       return SimpleResponse.builder()
+        return SimpleResponse.builder()
                 .httpStatus(HttpStatus.CREATED)
                 .message("Menu item with id: " + id + " is updated")
                 .build();
@@ -96,7 +96,17 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public List<MenuitemResponseRd> searchMenuItemsFilteredAndSorted(String keyword, boolean isVegetarian, String sortDirection) {
-        return menuItemRepository.searchMenuItemsFilteredAndSorted(keyword, isVegetarian, sortDirection);
+    public List<MenuitemResponseRd> sortByPrice(String ascDesc) {
+        return menuItemRepository.sortByPrice(ascDesc);
+    }
+
+    @Override
+    public List<MenuitemResponseRd> searchMenuItems(boolean isVegetarian) {
+        return menuItemRepository.searchMenuItems(isVegetarian);
+    }
+
+    @Override
+    public List<MenuitemResponseRd> globalSearch(String word) {
+        return menuItemRepository.globalSearch(word);
     }
 }

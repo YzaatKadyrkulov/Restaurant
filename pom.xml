@@ -56,6 +56,16 @@
             <version>2.0.1.Final</version>
         </dependency>
         <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+        </dependency>
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
@@ -76,6 +86,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.0.4</version>
         </dependency>
     </dependencies>
 

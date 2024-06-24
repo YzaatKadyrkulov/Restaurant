@@ -5,8 +5,8 @@
             Long id,
             String name,
             String image,
-            double price,
             String description,
+            double price,
             boolean isVegetarian
     ) {
     }

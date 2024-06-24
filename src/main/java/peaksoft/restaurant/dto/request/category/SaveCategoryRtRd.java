@@ -3,7 +3,7 @@ package peaksoft.restaurant.dto.request.category;
 import lombok.Builder;
 
 @Builder
-public record SaveCategoryRtRd(
+public record  SaveCategoryRtRd(
       String name
 ) {
 }

@@ -1,6 +1,7 @@
 package peaksoft.restaurant.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.restaurant.dto.request.menuitem.MenuitemRequestRd;
@@ -21,6 +22,9 @@ public class MenuitemApi {
     @PostMapping("/add/{restaurantId}")
     public SimpleResponse addMenuItem(@PathVariable Long restaurantId,
                                       @RequestBody MenuitemRequestRd menuitemRequestRd) {
+        if (menuitemRequestRd.price() < 0) {
+            throw new IllegalArgumentException("\"Price cannot be negative\"");
+        }
         return menuitemService.addMenuItem(restaurantId, menuitemRequestRd);
     }
 
@@ -46,11 +50,20 @@ public class MenuitemApi {
         return menuitemService.findAllMenuItems();
     }
 
-    @GetMapping("/search/{keyword}/{isVegetarian}/{sortDirection}")
-    public List<MenuitemResponseRd> searchMenuItemsFilteredAndSorted(@PathVariable String keyword,
-                                                                     @PathVariable boolean isVegetarian,
-                                                                     @PathVariable String sortDirection) {
-        return menuitemService.searchMenuItemsFilteredAndSorted(keyword, isVegetarian, sortDirection);
+    @PostMapping("/sort/{ascDesc}")
+    public List<MenuitemResponseRd> sortByPrice(@PathVariable String ascDesc) {
+        return menuitemService.sortByPrice(ascDesc);
+    }
+
+    @GetMapping("/search/{isVegetarian}")
+    public List<MenuitemResponseRd> searchMenuItems(@PathVariable boolean isVegetarian) {
+        return menuitemService.searchMenuItems(isVegetarian);
+    }
+
+    @GetMapping("/globalSearch/{word}")
+    public List<MenuitemResponseRd> globalSearch(@PathVariable String word) {
+        return menuitemService.globalSearch(word);
     }
 
 }
+

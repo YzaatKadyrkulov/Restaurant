@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import peaksoft.restaurant.enums.Role;
-import peaksoft.restaurant.validator.ValidPassword;
+import peaksoft.restaurant.validator.ValidPhoneNumber;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public class User extends BaseEntity implements UserDetails {
     @Size(min = 4)
     private String password;
     @NotBlank
-    @ValidPassword
+    @ValidPhoneNumber
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     @NotBlank

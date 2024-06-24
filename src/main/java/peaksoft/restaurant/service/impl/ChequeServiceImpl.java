@@ -9,15 +9,18 @@ import peaksoft.restaurant.dto.response.cheque.SaveChequeResponseRd;
 import peaksoft.restaurant.dto.response.restaurant.SimpleResponse;
 import peaksoft.restaurant.entities.Cheque;
 import peaksoft.restaurant.entities.Menuitem;
+import peaksoft.restaurant.entities.Restaurant;
 import peaksoft.restaurant.entities.User;
 import peaksoft.restaurant.exception.NotFoundException;
 import peaksoft.restaurant.repository.ChequeRepository;
+import peaksoft.restaurant.repository.RestaurantRepository;
 import peaksoft.restaurant.repository.UserRepository;
 import peaksoft.restaurant.service.ChequeService;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class ChequeServiceImpl implements ChequeService {
     private final ChequeRepository chequeRepository;
     private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public SimpleResponse addCheque(Long userId, SaveChequeRequestRd saveChequeRequestRd) {
@@ -32,7 +36,7 @@ public class ChequeServiceImpl implements ChequeService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("User with id %d not found ", userId)));
         Cheque cheque = new Cheque();
-        cheque.setPriceAverage(saveChequeRequestRd.priceAverage());
+        cheque.setPriceAverage((int) saveChequeRequestRd.priceAverage());
         cheque.setLocalDate(saveChequeRequestRd.localDate());
         user.setCheque(cheque);
         cheque.getUsers().add(user);
@@ -51,7 +55,7 @@ public class ChequeServiceImpl implements ChequeService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Cheque with id %d not found ", id)));
 
-        cheque.setPriceAverage(saveChequeRequestRd.priceAverage());
+        cheque.setPriceAverage( (int) saveChequeRequestRd.priceAverage());
         cheque.setLocalDate(saveChequeRequestRd.localDate());
         chequeRepository.save(cheque);
 
@@ -76,13 +80,18 @@ public class ChequeServiceImpl implements ChequeService {
 
     @Override
     public Optional<SaveChequeResponseRd> getChequeById(Long id) {
-        return Optional.ofNullable(chequeRepository.getChequeById(id).orElseThrow(() -> new NotFoundException(
-                String.format("Cheque with id %d not found ", id))));
-    }
-
-    @Override
-    public List<SaveChequeResponseRd> getAllCheques() {
-        return chequeRepository.getAllCheques();
+        Cheque cheque = chequeRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Cheque with id:%s is not present", id)));
+        Restaurant restaurant = restaurantRepository.findById(1L).orElseThrow(() -> new NotFoundException(String.format("Restaurant with id:%s is not present", 1L)));
+        List<Menuitem> items =  cheque.getMenuItems();
+        List<String> collect = items.stream().map(Menuitem::getName).toList();
+        return Optional.ofNullable(SaveChequeResponseRd.builder()
+                .id(cheque.getId())
+                .waiterFullName(cheque.getUsers().getFirst().getFirstName())
+                .items(collect)
+                .service(restaurant.getService())
+                .priceAverage(cheque.getPriceAverage())
+                .grandTotal((cheque.getPriceAverage() * restaurant.getService() / 100) + cheque.getPriceAverage())
+                .build());
     }
 
     public double getTotalAmountForWaiterOnDate(Long waiterId, LocalDate date) {

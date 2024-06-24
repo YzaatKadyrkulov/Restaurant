@@ -14,11 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ChequeRepository extends JpaRepository<Cheque, Long> {
 
-    Optional<SaveChequeResponseRd> getChequeById(Long id);
-
-    @Query("select new peaksoft.restaurant.dto.response.cheque.SaveChequeResponseRd(c.id,c.priceAverage,c.localDate) from Cheque c")
-    List<SaveChequeResponseRd> getAllCheques();
-
     @Query("SELECT c FROM Cheque c JOIN c.users u WHERE u.id = :waiterId AND u.role = 'WAITER' AND c.localDate = :localDate")
     List<Cheque> findByWaiterAndDate(@Param("waiterId") Long waiterId, @Param("localDate") LocalDate localDate);
 

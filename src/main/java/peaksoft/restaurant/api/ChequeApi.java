@@ -45,11 +45,6 @@ public class ChequeApi {
         return chequeService.getChequeById(id);
     }
 
-    @GetMapping
-    public List<SaveChequeResponseRd> getAllCheques() {
-        return chequeService.getAllCheques();
-    }
-
     @GetMapping("/getTotalAmountForWaiterOnDate/{waiterId}/{date}")
     public double getTotalAmountForWaiterOnDate(@PathVariable Long waiterId,
                                                 @PathVariable LocalDate date) {

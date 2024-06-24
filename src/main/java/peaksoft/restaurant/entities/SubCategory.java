@@ -19,9 +19,9 @@ import static jakarta.persistence.CascadeType.*;
 public class SubCategory extends BaseEntity {
     private String name;
 
-    @ManyToOne(cascade = {MERGE,REFRESH,REMOVE})
+    @ManyToOne(cascade = {REFRESH,DETACH})
     private Menuitem menuitem;
 
-    @ManyToOne(cascade = {MERGE,REFRESH,REMOVE})
+    @ManyToOne(cascade = {REFRESH,DETACH})
     private Category category;
 }

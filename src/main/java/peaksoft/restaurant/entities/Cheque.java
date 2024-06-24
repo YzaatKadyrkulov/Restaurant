@@ -18,7 +18,7 @@ import static jakarta.persistence.CascadeType.*;
 @SequenceGenerator(name = "base_id_gen", sequenceName = "cheque_seq",allocationSize = 1)
 public class Cheque extends BaseEntity {
     @Getter
-    private double priceAverage;
+    private int priceAverage;
 
     @Getter
     private LocalDate localDate;
@@ -29,6 +29,9 @@ public class Cheque extends BaseEntity {
     @Getter
     @ManyToMany(mappedBy = "cheques",cascade = {MERGE,REFRESH,DETACH,REMOVE})
     private List<Menuitem>menuItems;
+
+    @ElementCollection
+    private List<String> items;
 
     public List<User> getUsers() {
         if (users == null) {
