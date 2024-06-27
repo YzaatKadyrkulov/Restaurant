@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChequeService {
-    SimpleResponse addCheque(Long userId, SaveChequeRequestRd saveChequeRequestRd);
+    SimpleResponse addCheque(Long userId, Long menuId, SaveChequeRequestRd saveChequeRequestRd);
 
     SimpleResponse updateChequeById(Long id, SaveChequeRequestRd saveChequeRequestRd);
 

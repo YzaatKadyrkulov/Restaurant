@@ -16,5 +16,5 @@ public interface StopListService {
 
     List<StopListResponseRd> getStopList();
 
-    Optional<StopListResponseRd> findByMenuitemId(Long menuitemId);
+    Optional<StopListResponseRd> findByMenuItemId(Long menuitemId);
 }

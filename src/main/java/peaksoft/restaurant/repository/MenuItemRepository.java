@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface MenuItemRepository extends JpaRepository<Menuitem,Long> {
 
-
     @Query("select new peaksoft.restaurant.dto.response.menuitem.MenuitemResponseRd(m.id, m.name, m.image, m.description, m.price, m.isVegetarian) from Menuitem m ")
     Optional<MenuitemResponseRd>findMenuItemById(Long id);
 
@@ -57,7 +56,7 @@ public interface MenuItemRepository extends JpaRepository<Menuitem,Long> {
             "m.price, " +
             "m.isVegetarian " +
             ") from Menuitem m " +
-            "left join m.subcategories sb " +
+            "left join m.subCategory sb " +
             "left join sb.category c " +
             "where lower(sb.name) like lower(concat('%', :word, '%')) " +
             "or lower(m.name) like lower(concat('%', :word, '%')) " +

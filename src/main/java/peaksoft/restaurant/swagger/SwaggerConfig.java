@@ -9,8 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Collections;
 
 @Configuration
-public class SwagerConfig{
+public class SwaggerConfig{
     private static final String API_KEY = "Bearer Token";
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -19,6 +20,7 @@ public class SwagerConfig{
                 .info(new Info().title("Restaurant by Yzaat"))
                 .security(Collections.singletonList(new SecurityRequirement().addList(API_KEY)));
     }
+
     public SecurityScheme apiKeySecuritySchema() {
         return new SecurityScheme()
                 .name("Auth API")

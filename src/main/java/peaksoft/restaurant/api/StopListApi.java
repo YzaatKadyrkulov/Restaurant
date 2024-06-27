@@ -37,7 +37,7 @@ public class StopListApi {
 
     @GetMapping("/{id}")
     public Optional<StopListResponseRd> findByMenuitemId(@PathVariable Long id) {
-        return stopListService.findByMenuitemId(id);
+        return stopListService.findByMenuItemId(id);
     }
 
     @GetMapping("/getAll")

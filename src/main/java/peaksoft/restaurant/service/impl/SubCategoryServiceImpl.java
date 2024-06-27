@@ -35,14 +35,12 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         Menuitem menuItem = menuItemRepository.findById(menuId)
                 .orElseThrow(() -> new NotFoundException("Menu item with id: " + menuId + " not found"));
 
-
         SubCategory subCategory = new SubCategory();
         subCategory.setName(subcategorySaveRqRd.name());
         category.getSubcategories().add(subCategory);
         subCategory.setCategory(category);
-        category.getSubcategories().add(subCategory);
-        menuItem.getSubcategories().add(subCategory);
-        subCategory.setMenuitem(menuItem);
+        menuItem.setSubCategory(subCategory);
+        subCategory.getMenuItems().add(menuItem);
 
         subCategoryRepository.save(subCategory);
 

@@ -27,11 +27,8 @@ public class Cheque extends BaseEntity {
     private List<User> users = new ArrayList<>();
 
     @Getter
-    @ManyToMany(mappedBy = "cheques",cascade = {MERGE,REFRESH,DETACH,REMOVE})
-    private List<Menuitem>menuItems;
-
-    @ElementCollection
-    private List<String> items;
+    @ManyToMany(cascade = {MERGE,REFRESH,REMOVE})
+    private List<Menuitem>menuItems = new ArrayList<>();
 
     public List<User> getUsers() {
         if (users == null) {
@@ -39,5 +36,4 @@ public class Cheque extends BaseEntity {
         }
         return users;
     }
-
 }

@@ -33,7 +33,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .name(restaurantRequestRd.name())
                 .location(restaurantRequestRd.location())
                 .restType(restaurantRequestRd.restType())
-                .numberOfEmployees(restaurantRequestRd.numberOfEmployees())
+                .numberOfEmployees(0L)
                 .service(restaurantRequestRd.service())
                 .build();
 

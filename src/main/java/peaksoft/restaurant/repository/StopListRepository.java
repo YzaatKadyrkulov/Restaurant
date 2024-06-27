@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface StopListRepository extends JpaRepository<StopList,Long> {
     @Query("SELECT new peaksoft.restaurant.dto.response.stopList.StopListResponseRd(s.id, s.reason, s.date) " +
             "FROM StopList s " +
-            "LEFT JOIN s.menuitem m " +
+            "LEFT JOIN s.menuItem m " +
             "WHERE m.id = ?1")
     List<StopListResponseRd> findStopListEntriesByMenuItemId(Long menuItemId);
 
@@ -24,9 +24,9 @@ public interface StopListRepository extends JpaRepository<StopList,Long> {
     @Query("select new peaksoft.restaurant.dto.response.stopList.StopListResponseRd(s.id,s.reason,s.date) from StopList s")
     List<StopListResponseRd> getStopList();
 
-    StopList findByMenuitemAndDate(Menuitem menuItem, LocalDate date);
+    StopList findByMenuItemAndDate(Menuitem menuItem, LocalDate date);
 
-    Optional<StopListResponseRd> findByMenuitemId(Long menuitemId);
+    Optional<StopListResponseRd> findByMenuItemId(Long menuitemId);
 
     List<StopList> findAllByDate(LocalDate date);
 }

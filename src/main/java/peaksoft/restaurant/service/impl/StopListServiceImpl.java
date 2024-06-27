@@ -17,6 +17,7 @@ import peaksoft.restaurant.service.StopListService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,25 +27,39 @@ public class StopListServiceImpl implements StopListService {
     private final MenuItemRepository menuItemRepository;
 
     @Override
-    @Transactional // Обернем метод в транзакцию для атомарности операций
     public SimpleResponse addStopList(Long menuId, StopListRequestRd stopListRequestRd) {
         Menuitem menuItem = menuItemRepository.findById(menuId)
                 .orElseThrow(() -> new NotFoundException("Menu item with id: " + menuId + " not found"));
 
-        // Получаем все доступные ед
+        // Проверяем, не существует ли уже запись StopList для данной еды на указанную дату
+        StopList existingStopListEntry = stopListRepository.findByMenuItemAndDate(menuItem, stopListRequestRd.date());
+
+        if (existingStopListEntry != null) {
+            throw new IllegalArgumentException("Stop list entry for menu item with id " + menuItem.getId() + " and date " + stopListRequestRd.date() + " already exists.");
+        }
+
+        // Создаем новую запись в StopList
+        StopList stopListEntry = new StopList();
+        stopListEntry.setMenuItem(menuItem);
+        stopListEntry.setReason(stopListRequestRd.reason());
+        stopListEntry.setDate(stopListRequestRd.date());
+
+        stopListRepository.save(stopListEntry);
+
+        // Получаем все доступные блюда
         List<Menuitem> allMenuItems = menuItemRepository.findAll();
 
         // Получаем все записи StopList на указанную дату
         List<StopList> existingStopListEntries = stopListRepository.findAllByDate(stopListRequestRd.date());
 
-        // Создаем список отсутствующих ед
+        // Создаем список отсутствующих блюд
         List<Menuitem> missingMenuItems = new ArrayList<>();
 
-        // Проверяем каждую доступную ед на отсутствие в StopList на указанную дату
+        // Проверяем каждое доступное блюдо на отсутствие в StopList на указанную дату
         for (Menuitem item : allMenuItems) {
-            boolean foundInStopList = false; // был ли найден текущий элемент в меню existingStopListEntries
-            for (StopList stopList : existingStopListEntries) {   //по списку existingStopListEntries, который, предположительно, содержит записи о запретах на определенную дату.
-                if (stopList.getMenuitem().getId().equals(item.getId())) {
+            boolean foundInStopList = false;
+            for (StopList stopList : existingStopListEntries) {
+                if (stopList.getMenuItem().getId().equals(item.getId())) {
                     foundInStopList = true;
                     break;
                 }
@@ -54,31 +69,24 @@ public class StopListServiceImpl implements StopListService {
             }
         }
 
-        // Создаем записи в StopList для отсутствующих ед
-        for (Menuitem missingItem : missingMenuItems) {
-            // Проверяем, не существует ли уже запись StopList для данной еды на указанную дату
-            StopList existingStopListEntry = stopListRepository.findByMenuitemAndDate(missingItem, stopListRequestRd.date());
+        // Формируем сообщение с отсутствующими блюдами
+        String missingMenuItemsMessage = missingMenuItems.stream()
+                .map(Menuitem::getName)
+                .collect(Collectors.joining(", "));
 
-            if (existingStopListEntry == null) {
-                // Если запись не существует, создаем новую запись в StopList
-                StopList stopListEntry = new StopList();
-                stopListEntry.setMenuitem(missingItem);
-                stopListEntry.setReason(stopListRequestRd.reason());
-                stopListEntry.setDate(stopListRequestRd.date());
-                menuItem.setStopList(stopListEntry);
-                stopListEntry.setMenuitem(menuItem);
-                stopListRepository.save(stopListEntry);
-            } else {
-                // Если запись уже существует, можно выбросить исключение или выполнить другую обработку
-                throw new IllegalArgumentException("Stop list entry for menu item with id " + missingItem.getId() + " and date " + stopListRequestRd.date() + " already exists.");
-            }
+        String responseMessage = "Stop list entry successfully added for menu item with id " + menuItem.getId();
+        if (!missingMenuItems.isEmpty()) {
+            responseMessage += ". Missing menu items: " + missingMenuItemsMessage;
         }
 
-        return SimpleResponse.builder()
-                .httpStatus(HttpStatus.CREATED)
-                .message("Stop list entries successfully added for missing menu items on date: " + stopListRequestRd.date())
-                .build();
+        return new SimpleResponse(
+                HttpStatus.CREATED,
+                responseMessage
+        );
     }
+
+
+
 
 
 
@@ -119,8 +127,8 @@ public class StopListServiceImpl implements StopListService {
 
 
     @Override
-    public Optional<StopListResponseRd> findByMenuitemId(Long menuitemId) {
-        return Optional.ofNullable(stopListRepository.findByMenuitemId(menuitemId)
+    public Optional<StopListResponseRd> findByMenuItemId(Long menuitemId) {
+        return Optional.ofNullable(stopListRepository.findByMenuItemId(menuitemId)
                 .orElseThrow(() -> new NotFoundException("Stop list entry with id: " + menuitemId + " not found")));
 
     }

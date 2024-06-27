@@ -13,6 +13,7 @@ import peaksoft.restaurant.entities.Restaurant;
 import peaksoft.restaurant.entities.User;
 import peaksoft.restaurant.exception.NotFoundException;
 import peaksoft.restaurant.repository.ChequeRepository;
+import peaksoft.restaurant.repository.MenuItemRepository;
 import peaksoft.restaurant.repository.RestaurantRepository;
 import peaksoft.restaurant.repository.UserRepository;
 import peaksoft.restaurant.service.ChequeService;
@@ -29,17 +30,24 @@ public class ChequeServiceImpl implements ChequeService {
     private final ChequeRepository chequeRepository;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private final MenuItemRepository menuItemRepository;
 
     @Override
-    public SimpleResponse addCheque(Long userId, SaveChequeRequestRd saveChequeRequestRd) {
+    public SimpleResponse addCheque(Long userId, Long menuId, SaveChequeRequestRd saveChequeRequestRd) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("User with id %d not found ", userId)));
+
+        Menuitem menuItem = menuItemRepository.findById(menuId)
+                .orElseThrow(() -> new NotFoundException("Menu item with id: " + menuId + " not found"));
+
         Cheque cheque = new Cheque();
-        cheque.setPriceAverage((int) saveChequeRequestRd.priceAverage());
+        cheque.setPriceAverage(saveChequeRequestRd.priceAverage());
         cheque.setLocalDate(saveChequeRequestRd.localDate());
         user.setCheque(cheque);
         cheque.getUsers().add(user);
+        menuItem.getCheques().add(cheque);
+        cheque.getMenuItems().add(menuItem);
 
         chequeRepository.save(cheque);
 

@@ -10,5 +10,10 @@ public record RestaurantRequestRd(
         RestType restType,
         Long numberOfEmployees,
         int service
-        ) {
+) {
+    public RestaurantRequestRd {
+         if (numberOfEmployees == null) {
+            numberOfEmployees = 0L;
+        }
+    }
 }

@@ -23,10 +23,11 @@ public class ChequeApi {
 
     private final ChequeService chequeService;
 
-    @PostMapping("/add/{userId}")
+    @PostMapping("/add/{userId}/{menuId}")
     public SimpleResponse addCheque(@PathVariable Long userId,
+                                    @PathVariable Long menuId,
                                     @RequestBody SaveChequeRequestRd saveChequeRequestRd) {
-        return chequeService.addCheque(userId, saveChequeRequestRd);
+        return chequeService.addCheque(userId,menuId, saveChequeRequestRd);
     }
 
     @PutMapping("/{id}")

@@ -24,11 +24,11 @@ public class StopList extends BaseEntity{
     private LocalDate date;
 
     @OneToOne(cascade = {MERGE,REFRESH,DETACH}, orphanRemoval = true)
-    private Menuitem menuitem;
+    private Menuitem menuItem;
 
     @Override
     public int hashCode() {
-        return Objects.hash(menuitem, date);
+        return Objects.hash(menuItem, date);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class StopList extends BaseEntity{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         StopList stopList = (StopList) obj;
-        return Objects.equals(menuitem, stopList.menuitem) &&
+        return Objects.equals(menuItem, stopList.menuItem) &&
                 Objects.equals(date, stopList.date);
     }
 //    Для того чтобы сохранить в StopList только одну запись для определенной еды на определенную дату, вам следует сделать следующее:

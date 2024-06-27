@@ -1,12 +1,12 @@
 package peaksoft.restaurant.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -19,9 +19,9 @@ import static jakarta.persistence.CascadeType.*;
 public class SubCategory extends BaseEntity {
     private String name;
 
-    @ManyToOne(cascade = {REFRESH,DETACH})
-    private Menuitem menuitem;
+    @OneToMany(mappedBy = "subCategory", cascade = {MERGE, REFRESH, DETACH,REMOVE}, orphanRemoval = true)
+    private List<Menuitem> menuItems = new ArrayList<>();
 
-    @ManyToOne(cascade = {REFRESH,DETACH})
+    @ManyToOne(cascade = {MERGE, REFRESH,DETACH,REMOVE})
     private Category category;
 }
