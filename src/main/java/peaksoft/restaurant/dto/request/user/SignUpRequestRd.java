@@ -5,7 +5,6 @@ import peaksoft.restaurant.enums.Role;
 
 import java.time.LocalDate;
 
-@Builder
 public record SignUpRequestRd(
         String firstName,
         String lastName,

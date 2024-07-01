@@ -40,65 +40,61 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(UserApi.class);
 
-        public SimpleResponse save(Long restaurantId, SignUpRequestRd signUpRequestRd) {
-            Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                    .orElseThrow(() -> new NotFoundException("Restaurant with id " + restaurantId + " not found"));
+    @Override
+    public SimpleResponse saveUser(Long restaurantId, SignUpRequestRd signUpRequestRd, boolean isApproved) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new NotFoundException("Restaurant with id " + restaurantId + " not found"));
 
-            if (restaurant.getUsers().size() >= 15) {
-                throw new IllegalStateException("Restaurant with id " + restaurantId + " already has the maximum number of employees (15)");
-            }
-
-            if (userRepository.existsByEmail(signUpRequestRd.email())) {
-                throw new EntityExistsException(
-                        "User with email: " + signUpRequestRd.email() + " already exists!");
-            }
-
-            try {
-                if (signUpRequestRd.role() == Role.CHEF) {
-                    if (!isValidAge(signUpRequestRd.dateOfBirth(), 25, 45) || signUpRequestRd.experience() < 2) {
-                        throw new IllegalArgumentException("Invalid age or experience for Chef.");
-                    }
-                } else if (signUpRequestRd.role() == Role.WAITER) {
-                    if (!isValidAge(signUpRequestRd.dateOfBirth(), 18, 30) || signUpRequestRd.experience() < 1) {
-                        throw new IllegalArgumentException("Invalid age or experience for Waiter.");
-                    }
-                } else {
-                    throw new IllegalArgumentException("Invalid role specified.");
-                }
-
-                User user = User.builder()
-                        .firstName(signUpRequestRd.firstName())
-                        .lastName(signUpRequestRd.lastName())
-                        .dateOfBirth(signUpRequestRd.dateOfBirth())
-                        .email(signUpRequestRd.email())
-                        .password(signUpRequestRd.password())
-                        .phoneNumber(signUpRequestRd.phoneNumber())
-                        .role(signUpRequestRd.role())
-                        .experience(signUpRequestRd.experience())
-                        .build();
-
-                restaurant.getUsers().add(user);
-                user.setRestaurant(restaurant);
-
-                restaurant.setNumberOfEmployees(restaurant.getNumberOfEmployees() + 1);
-
-                userRepository.save(user);
-
-                return SimpleResponse.builder()
-                        .httpStatus(HttpStatus.OK)
-                        .message("User with id " + user.getId() + " saved successfully")
-                        .build();
-            } catch (IllegalArgumentException | IllegalStateException | NotFoundException | EntityExistsException ex) {
-                logger.error("Exception occurred while saving user: {}", ex.getMessage(), ex);
-
-                throw ex;
-            } catch (Exception ex) {
-                logger.error("Unexpected exception occurred while saving user: {}", ex.getMessage(), ex);
-
-                throw new NotFoundException("An unexpected error occurred");
-            }
+        if (restaurant.getUsers().size() >= 15) {
+            throw new IllegalStateException("Restaurant with id " + restaurantId + " already has the maximum number of employees (15)");
         }
 
+        if (userRepository.existsByEmail(signUpRequestRd.email())) {
+            throw new EntityExistsException(
+                    "User with email: " + signUpRequestRd.email() + " already exists!");
+        }
+
+        try {
+            if (signUpRequestRd.role() == Role.CHEF) {
+                if (!isValidAge(signUpRequestRd.dateOfBirth(), 25, 45) || signUpRequestRd.experience() < 2) {
+                    throw new IllegalArgumentException("Invalid age or experience for Chef.");
+                }
+            } else if (signUpRequestRd.role() == Role.WAITER) {
+                if (!isValidAge(signUpRequestRd.dateOfBirth(), 18, 30) || signUpRequestRd.experience() < 1) {
+                    throw new IllegalArgumentException("Invalid age or experience for Waiter.");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid role specified.");
+            }
+
+            User user = User.builder()
+                    .firstName(signUpRequestRd.firstName())
+                    .lastName(signUpRequestRd.lastName())
+                    .dateOfBirth(signUpRequestRd.dateOfBirth())
+                    .email(signUpRequestRd.email())
+                    .password(signUpRequestRd.password())
+                    .phoneNumber(signUpRequestRd.phoneNumber())
+                    .role(signUpRequestRd.role())
+                    .experience(signUpRequestRd.experience())
+                    .build();
+
+            if (isApproved) {
+                restaurant.getUsers().add(user);
+                user.setRestaurant(restaurant);
+                restaurant.setNumberOfEmployees(restaurant.getNumberOfEmployees() + 1);
+                userRepository.save(user);
+                return new SimpleResponse(HttpStatus.OK, "User with id " + user.getId() + " saved successfully");
+            } else {
+                return new SimpleResponse(HttpStatus.OK, "User application rejected and not saved");
+            }
+        } catch (IllegalArgumentException | IllegalStateException | NotFoundException | EntityExistsException ex) {
+            logger.error("Exception occurred while saving user: {}", ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error("Unexpected exception occurred while saving user: {}", ex.getMessage(), ex);
+            throw new NotFoundException("An unexpected error occurred");
+        }
+    }
 
     private boolean isValidAge(LocalDate birthDate, int minAge, int maxAge) {
         int age = Period.between(birthDate, LocalDate.now()).getYears();

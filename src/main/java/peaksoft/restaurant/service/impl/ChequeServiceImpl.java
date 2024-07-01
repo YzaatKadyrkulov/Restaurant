@@ -63,7 +63,7 @@ public class ChequeServiceImpl implements ChequeService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Cheque with id %d not found ", id)));
 
-        cheque.setPriceAverage( (int) saveChequeRequestRd.priceAverage());
+        cheque.setPriceAverage(saveChequeRequestRd.priceAverage());
         cheque.setLocalDate(saveChequeRequestRd.localDate());
         chequeRepository.save(cheque);
 
@@ -90,7 +90,7 @@ public class ChequeServiceImpl implements ChequeService {
     public Optional<SaveChequeResponseRd> getChequeById(Long id) {
         Cheque cheque = chequeRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Cheque with id:%s is not present", id)));
         Restaurant restaurant = restaurantRepository.findById(1L).orElseThrow(() -> new NotFoundException(String.format("Restaurant with id:%s is not present", 1L)));
-        List<Menuitem> items =  cheque.getMenuItems();
+        List<Menuitem> items = cheque.getMenuItems();
         List<String> collect = items.stream().map(Menuitem::getName).toList();
         return Optional.ofNullable(SaveChequeResponseRd.builder()
                 .id(cheque.getId())
@@ -102,6 +102,7 @@ public class ChequeServiceImpl implements ChequeService {
                 .build());
     }
 
+    @Override
     public double getTotalAmountForWaiterOnDate(Long waiterId, LocalDate date) {
         List<Cheque> cheques = chequeRepository.findByWaiterAndDate(waiterId, date);
         return cheques.stream()
@@ -110,6 +111,7 @@ public class ChequeServiceImpl implements ChequeService {
                 .sum();
     }
 
+    @Override
     public double getDailyAverageChequeAmount(LocalDate date) {
         List<Cheque> cheques = chequeRepository.findByDate(date);
         double totalAmount = cheques.stream()

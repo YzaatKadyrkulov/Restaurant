@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    SimpleResponse save(Long restaurantId, SignUpRequestRd signUpRequestRd);
+    SimpleResponse saveUser(Long restaurantId, SignUpRequestRd signUpRequestRd, boolean isApproved);
 
     AuthenticationResponse signIn(SignInRequestRd sign);
 

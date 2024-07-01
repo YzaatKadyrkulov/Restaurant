@@ -14,13 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface StopListRepository extends JpaRepository<StopList,Long> {
-    @Query("SELECT new peaksoft.restaurant.dto.response.stopList.StopListResponseRd(s.id, s.reason, s.date) " +
-            "FROM StopList s " +
-            "LEFT JOIN s.menuItem m " +
-            "WHERE m.id = ?1")
-    List<StopListResponseRd> findStopListEntriesByMenuItemId(Long menuItemId);
-
-
     @Query("select new peaksoft.restaurant.dto.response.stopList.StopListResponseRd(s.id,s.reason,s.date) from StopList s")
     List<StopListResponseRd> getStopList();
 

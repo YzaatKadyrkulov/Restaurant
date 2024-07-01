@@ -12,8 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByName(String name);
-
     Optional<CategoryRsRd> getCategoriesById(Long id);
 
     @Query("select new peaksoft.restaurant.dto.response.category.CategoryRsRd(c.id,c.name) from Category c")

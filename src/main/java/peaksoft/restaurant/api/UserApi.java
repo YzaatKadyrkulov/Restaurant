@@ -18,11 +18,12 @@ import java.util.Optional;
 public class UserApi {
     private final UserService userService;
 
-    @PostMapping("/save/{id}")
+    @PostMapping("/save/{id}/{isApproved}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public SimpleResponse save(@PathVariable Long id,
-                               @Valid @RequestBody SignUpRequestRd signUpRequest) {
-        return userService.save(id, signUpRequest);
+    public SimpleResponse saveUser(@PathVariable Long id,
+                                   @Valid @RequestBody SignUpRequestRd signUpRequest,
+                                   @PathVariable boolean isApproved) {
+        return userService.saveUser(id, signUpRequest,isApproved);
     }
 
     @PutMapping("/update/{id}")

@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
-    Optional<SubCategory> findByName(String name);
-
     Optional<SubcategoryResponseRd> findSubCategoriesById(Long subcategoryId);
 
     @Query("select new peaksoft.restaurant.dto.response.subcategory.SubcategoryResponseRd(s.id,s.name) from SubCategory s")
